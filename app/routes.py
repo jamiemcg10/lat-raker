@@ -2,7 +2,9 @@ from app import app
 from flask import render_template, url_for, request, session, send_from_directory, send_file
 import create_rim_weight as engine
 import quantipy as qp 
-import os
+import pandas as pd
+import os, sys, traceback
+import pyreadstat
 
 @app.route('/')
 @app.route('/index')
@@ -18,17 +20,44 @@ def process_file():
         file = request.files['file']
         filename = file.filename
         session['filename'] = filename
+        # create temp directory if it does not exist
+        if not os.path.isdir('./temp'):
+            print('Creating temp directory')
+            os.system(f"mkdir {'./temp'}")
         file.save('./temp/%s' %(filename))
+        print("Temporary file saved")
 
+
+        ### NEW
+        # ds = qp.DataSet('data')
+        # df, meta = pyreadstat.read_sav('./temp/' + filename)
+        # #df = pd.read_spss('./temp/' + filename, convert_categoricals=False)
+        # meta = meta.variable_value_labels
+        # new_meta = {'info': {'columns': {}}, 'lib': {'default text': 'en-GB', 'values': {}}, 'columns': {}, 'masks': {},'sets': {'data file': {'text': {'en-GB': 'Variable order in source file'}, 
+	    #     'items': []}} }
+        # for k,v in meta.items():
+        #     print(new_meta['info']['columns'])
+        #     new_meta['columns'][k] = {"values": v, "name": k}
+        #     new_meta['sets']['data file']['items'].append('columns@' + k)
+        # meta = new_meta
+        # print(meta)
+        # ds.from_components(df, meta)
+        ### OLD
         ds = qp.DataSet('data')
         ds.read_spss('./temp/' + filename, ioLocale=None)
+        ###
+
+        print(ds.meta())
 
         meta_data = ds.meta()['columns'].values()
         meta_data = list(iter(meta_data))
 
         return {'success': 'true', 'meta_data_array': meta_data, 'meta_data_obj': ds.meta()['columns']}
 
-    except:
+    except Exception as e:
+        print(e)
+        print(sys.exc_info()[0])
+        print(traceback.print_exc())
         return {'success': 'false'}
 
 
@@ -74,7 +103,10 @@ def close_resources():
         except FileNotFoundError:
             print("This file does not exist")
     if weighted_file_name != None:
-        os.remove(weighted_file_name)
+        try:
+            os.remove(weighted_file_name)
+        except FileNotFoundError:
+            print("This file is no longer in the folder")
 
     # destroy session
     session.clear()

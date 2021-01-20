@@ -1,0 +1,120 @@
+a {
+    margin: 20px 0px;
+    display: block;
+}
+
+#add-factor {
+    margin-left: 1vw;
+}
+
+body {
+    padding: 25px;
+}
+
+#compute {
+    margin-top: 5vh;
+}
+
+#Crosstabs {
+    margin-top: 5vh;
+    max-width: fit-content;
+}
+
+#Crosstabs .report-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+#Crosstabs .text { /* override above */
+    justify-content: initial;
+}
+
+#error {
+    color: red;
+}
+
+.factor p:first-child {
+    margin-right: 35px;
+    font-weight: bold;
+}
+
+#file-form {
+    margin-top: 25px;
+}
+    
+#grouping-var {
+    margin-bottom: 35px;
+}
+
+h1 {
+    margin-bottom: 25px;
+}
+
+.inline {
+    display: inline-block;
+}
+
+input[type="text"] {
+    width: 60px;
+    margin-right: 3px;
+}
+
+.input-group {
+    margin-right: 25px;
+}
+
+.factor * {
+    display: inline;
+}
+
+.factor > input {
+    width: 40px;
+    margin-right: 3px;
+}
+
+.factor > label {
+    margin-left: 2vw;
+    margin-right: 1vw;
+}
+
+li {
+    margin: 0px 13px;
+}
+
+.remove-factor {
+    text-decoration: underline;
+    color: blue;
+    float: right;
+    margin-left: 35px;
+}
+
+.remove-factor:hover {
+    cursor: pointer;
+}
+
+.report-row :first-child {
+    width: 190px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+
+select {
+    margin-bottom: 3vh;
+}
+
+span + span {
+    width: 100px;
+    display: inline-block;
+}
+
+ul {
+    list-style: initial;
+    font-size: smaller;
+    margin-bottom: 3vh;
+}
+
+#weighting-factors {
+    margin-top: 2vh;
+    width: max-content;
+}
