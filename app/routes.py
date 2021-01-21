@@ -9,6 +9,8 @@ import pyreadstat
 @app.route('/')
 @app.route('/index')
 def index():
+    # load main page
+    # reset and initialize session
     session.clear()
     session['active'] = None
     return render_template('index.html')
@@ -17,7 +19,7 @@ def index():
 def process_file():
     try: 
         session['active'] = True
-        file = request.files['file']
+        file = request.files['file']  # .sav file user selected
         filename = file.filename
         session['filename'] = filename
         # create temp directory if it does not exist
@@ -43,12 +45,12 @@ def process_file():
         # print(meta)
         # ds.from_components(df, meta)
         ### OLD
+        # read dataset from saved .sav file
         ds = qp.DataSet('data')
         ds.read_spss('./temp/' + filename, ioLocale=None)
         ###
 
-        print(ds.meta())
-
+        # get file metadata
         meta_data = ds.meta()['columns'].values()
         meta_data = list(iter(meta_data))
 
@@ -63,7 +65,6 @@ def process_file():
 
 @app.route('/compute-weights', methods=['POST'])
 def compute_weights():
-    ## BE CAREFUL MAKING SOMEONE NOONE
     req_data = request.json
     print(req_data)
     target_variables = req_data['targetVariables']
@@ -83,10 +84,8 @@ def compute_weights():
 
 @app.route('/temp/<path:filename>', methods=['GET'])
 def download(filename):
-    print("FILE NAME")
-    print(filename)
+    # serve .sav file for user to download
     uploads = os.path.join(os.path.dirname(app.root_path), 'temp')
-    print(uploads)
     return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
 
 @app.route('/close', methods=['GET', 'POST'])
@@ -95,14 +94,12 @@ def close_resources():
     # delete sav files
     original_file_name = session.get('filename')
     weighted_file_name = session.get('weighted_location')
-    print(original_file_name)
-    print(weighted_file_name)
-    if original_file_name != None:
+    if original_file_name:
         try:
             os.remove('./temp/' + original_file_name)
         except FileNotFoundError:
             print("This file does not exist")
-    if weighted_file_name != None:
+    if weighted_file_name:
         try:
             os.remove(weighted_file_name)
         except FileNotFoundError:

@@ -25,7 +25,16 @@ body {
     justify-content: space-between;
 }
 
-#Crosstabs .text { /* override above */
+.xt-labels { /* override #Crosstabs .report-row */
+    justify-content: initial !important;
+}
+
+.xt-labels span {
+    width: initial;
+}
+
+
+#Crosstabs .text { /* override #Crosstabs .report-row */
     justify-content: initial;
 }
 
