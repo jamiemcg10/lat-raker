@@ -46,12 +46,14 @@ function appendQuestionSelectionList(id, metaDataList){
 
 }
 
-function displayResultsView(fileLocation, crosstabs, report){
+function displayResultsView(fileLocation, syntaxLocation, crosstabs, report){
     // remove inputs and dropdowns from screen and show weighting results along with
     // link to download weighted .sav file
 
     clearScreen();
-    $('body').append(`<a href="${fileLocation}" download>Click here to download your weighted file</a>`);
+    $('body').append(`<div id="download-box"></div>`)
+    $('#download-box').append(`<a href="${fileLocation}" download>Click here to download your weighted file</a>`);
+    $('#download-box').append(`<a href="${syntaxLocation}" download>Click here to download a syntax file to compute the weight</a>`);
     $('body').append('<h3>Results</h3>');
     $('body').append(`<ul>${resultsInfo}</ul>`);
     
@@ -106,20 +108,20 @@ function clearScreen(){
     $('ul').remove();
 }
 
-function validateInputs(event, numFactors, groupVar, factorList){
+function validateInputs(numFactors, groupVar, factorList){
     // make sure inputs are valid for weighting
 
     if (numFactors === 0){
         showError("You need to add at least one factor");
-        event.preventDefault();
-        return;
+        return false;
     }
 
     if (factorList.includes(groupVar) || groupVar === null){
         showError("You can't group by a weighting factor");
-        event.preventDefault();
-        return;
+        return false;
     }
+
+    return true;
 }
 
 function sumsTo100(array){

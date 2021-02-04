@@ -1,4 +1,11 @@
 .env
 /env/
+/venv/
 *.sav
 !data.sav
+todo.txt
+/temp/*
+*.sps
+.vscode/settings.json
+/Lib/
+/src/

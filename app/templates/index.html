@@ -21,7 +21,8 @@
         <div id="file-select-container">
             <form id="file-form">
                 <div class="input-group is-stacked">
-                    <label for="file">Select an SPSS data file (.sav). If there is a weight variable in this file, it will be overwritten.</label><input type="file" name="file" id="file" accept=".sav" required>
+                    <label for="file">Select an SPSS data file (.sav). The file must have a uuid variable. If there is a weight variable in this file, it will be overwritten.</label><input type="file" name="file" id="file" accept=".sav" required>
+                    <p class="error" id="error"></p>
                 </div>
             </form>
     </div>

@@ -6,6 +6,7 @@ $('document').ready(()=>{
     $('#file').change(function(){  
             // get file and send it when one is selected  
             $('#file-select-container').append('<p class="status">Uploading...</p>'); 
+            $('#error').text('');
             let file = getFile();
             sendFile(file);
     });
@@ -25,7 +26,7 @@ $('document').ready(()=>{
                     metaDataObj = results.meta_data_obj;
                     displaySelectionView(metaDataObj, metaDataList);
                 } else {
-                    $('.status').text("Sorry, there was a problem processing your data.");
+                    $('#error').text(results.message);
                 }
             },
             error: (jqXHR, textStatus, errorThrown)=>{
@@ -132,12 +133,15 @@ $('document').ready(()=>{
         let factors = $('.factor');
         let groupVar = $('#group-select').val();
 
-        validateInputs(event, numFactors, groupVar, factorList);
+        if (!validateInputs(numFactors, groupVar, factorList)){
+            event.preventDefault();
+            return;
+        }
 
         let targets = populateTargets(factors, numFactors);
         console.log(targets);
-
-        if (targets){
+        
+        if (Object.entries(targets).length > 0){
             if (groupVar !== '' && groupVar !== null){
                 groupVar = metaDataObj[groupVar] // replace variable with metadata for that variable
             }
@@ -154,8 +158,8 @@ $('document').ready(()=>{
                 processData: false,
                 success: (results)=>{
                     console.log(results);
-                    if(results.success){
-                        displayResultsView(results.location, results.crosstabs, results.report);
+                    if(results.success === "true"){
+                        displayResultsView(results.location, results.syntax, results.crosstabs, results.report);
                     } else {
                         showError('Sorry, there was a problem processing your data');
                     }
@@ -167,7 +171,7 @@ $('document').ready(()=>{
             }); 
         }  else {
             // error if there are no targets
-            showError('Sorry, there was a problem processing your data');
+            showError('Sorry, there was a problem processing your data. Please make sure you have chosen at least one factor.');
         }     
 
     });

@@ -1,5 +1,5 @@
 a {
-    margin: 20px 0px;
+    margin: 5px 0px;
     display: block;
 }
 
@@ -38,8 +38,16 @@ body {
     justify-content: initial;
 }
 
+#download-box {
+    margin: 20px 0px;
+}
+
 #error {
     color: red;
+}
+
+.factor {
+    margin: 20px 0px;
 }
 
 .factor p:first-child {

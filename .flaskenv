@@ -1,2 +1,1 @@
 FLASK_APP=rim_weighter.py
-FLASK_ENV=development

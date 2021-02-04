@@ -1,3 +1,4 @@
+0==0.0.0
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
@@ -18,7 +19,7 @@ python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-pptx==0.6.18
 pytz==2020.5
-quantipy3==0.2.3
+-e git+https://github.com/jamiemcg10/quantipy3.git@47556014c5c4ba40953de935c8996b2248b751bd#egg=quantipy3
 requests==2.25.1
 savReaderWriter==3.4.2
 scipy==1.6.0

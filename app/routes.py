@@ -30,29 +30,17 @@ def process_file():
         print("Temporary file saved")
 
 
-        ### NEW
-        # ds = qp.DataSet('data')
-        # df, meta = pyreadstat.read_sav('./temp/' + filename)
-        # #df = pd.read_spss('./temp/' + filename, convert_categoricals=False)
-        # meta = meta.variable_value_labels
-        # new_meta = {'info': {'columns': {}}, 'lib': {'default text': 'en-GB', 'values': {}}, 'columns': {}, 'masks': {},'sets': {'data file': {'text': {'en-GB': 'Variable order in source file'}, 
-	    #     'items': []}} }
-        # for k,v in meta.items():
-        #     print(new_meta['info']['columns'])
-        #     new_meta['columns'][k] = {"values": v, "name": k}
-        #     new_meta['sets']['data file']['items'].append('columns@' + k)
-        # meta = new_meta
-        # print(meta)
-        # ds.from_components(df, meta)
-        ### OLD
         # read dataset from saved .sav file
         ds = qp.DataSet('data')
-        ds.read_spss('./temp/' + filename, ioLocale=None)
-        ###
+        ds.read_spss('./temp/' + filename, ioLocale=None, detect_dichot=False)
+        
 
         # get file metadata
         meta_data = ds.meta()['columns'].values()
-        meta_data = list(iter(meta_data))
+        meta_data = list(iter(meta_data))  ## try to remove this to make upload faster
+
+        if ('uuid' not in ds.meta()['columns']):
+            return {'success': 'false', 'message': 'This file does not have a uuid variable.'}
 
         return {'success': 'true', 'meta_data_array': meta_data, 'meta_data_obj': ds.meta()['columns']}
 
@@ -74,12 +62,14 @@ def compute_weights():
     file_name = session['filename'] ## make special error if this doesn't exist
 
     try:
-        file_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name)
+        file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name)
         session['weighted_location'] = file_location
-        return {'success': 'true', 'location': file_location, 'crosstabs': crosstabs, 'report': report}
+        session['syntax_location'] = syntax_location
+        return {'success': 'true', 'location': file_location, 'syntax': syntax_location, 'crosstabs': crosstabs, 'report': report}
     except Exception as e:
         print(type(e))
         print(e)
+        print(traceback.print_exc())
         return {'success': 'false'}
 
 @app.route('/temp/<path:filename>', methods=['GET'])
@@ -94,6 +84,7 @@ def close_resources():
     # delete sav files
     original_file_name = session.get('filename')
     weighted_file_name = session.get('weighted_location')
+    syntax_file_name = session.get('syntax_location')
     if original_file_name:
         try:
             os.remove('./temp/' + original_file_name)
@@ -102,6 +93,11 @@ def close_resources():
     if weighted_file_name:
         try:
             os.remove(weighted_file_name)
+        except FileNotFoundError:
+            print("This file is no longer in the folder")
+    if syntax_file_name:
+        try:
+            os.remove(syntax_file_name)
         except FileNotFoundError:
             print("This file is no longer in the folder")
 
