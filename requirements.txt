@@ -11,7 +11,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 lxml==4.6.2
 MarkupSafe==1.1.1
-numpy==1.19.5
+numpy==1.14.5
 pandas==0.25.3
 Pillow==8.1.0
 prettytable==2.0.0
@@ -23,7 +23,7 @@ pytz==2020.5
 -e git+https://github.com/jamiemcg10/quantipy3.git@47556014c5c4ba40953de935c8996b2248b751bd#egg=quantipy3
 requests==2.25.1
 savReaderWriter==3.4.2
-scipy==1.5.4
+scipy==1.2.1
 six==1.15.0
 urllib3==1.26.2
 watchdog==1.0.2
