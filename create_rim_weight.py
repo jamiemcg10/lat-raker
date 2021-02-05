@@ -92,20 +92,23 @@ def save_file(ds, path):
 
     ds.write_spss(path)
 
-def save_syntax_file(ds, path):
+def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid'):
     """
         Purpose: Save a syntax file that can be run to re-create weight
         Parameters:
             ds - the active quantipy dataset
             path - location to save the file to
+            weight_name - name to use for creation of weight variable
+            unique_key - variable to use to assign weight
         Returns: None
     """
 
+    weight_row = "row." + weight_name
     with open(path, 'w') as f:
-        for row in ds[['uuid', 'weight']].itertuples():
-            f.write("if (uuid='%s') weight=%03.20f.\n" %(row.uuid, row.weight))
+        for row in ds[[unique_key, weight_name]].itertuples(index=False):
+            f.write("if (%s='%s') %s=%03.20f.\n" %(unique_key, row[0], weight_name, row[1]))
 
-def weight_data(variables, mapping, grouping, file_name, weight_name="weight"):
+def weight_data(variables, mapping, grouping, file_name, weight_name="weight", unique_key="uuid"):
     """
         Purpose: Takes variables, groupings and uses them to weight the dataset
         Parameters:
@@ -154,23 +157,23 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight"):
     else:
         grouping = None # set for crosstabs
     
-    ds.weight(scheme, weight_name="weight", unique_key='uuid')
+    ds.weight(scheme, weight_name=weight_name, unique_key=unique_key)
 
     ### Relabel weight
-    weight_label_key = list(ds.meta()['columns']['weight']['text'])[0] ## get key from weight dict
-    ds.meta()['columns']['weight']['text'][weight_label_key] = weight_name
+    weight_label_key = list(ds.meta()['columns'][weight_name]['text'])[0] ## get key from weight dict
+    ds.meta()['columns'][weight_name]['text'][weight_label_key] = weight_name
 
     ### Create name for saved weighted dataset using the time it was created
     dt = str(datetime.now()).replace(':','').replace('.','')
     file_location = './temp/' + dt.replace(" ","_") + '_weighted.sav'
     syntax_location = './temp/' + dt.replace(" ","_") + '_weight.sps'
 
-    crosstabs = check_weights(ds, variables, grouping)
+    crosstabs = check_weights(ds, variables, group=grouping, weight=weight_name)
 
     report = generate_report(scheme)
 
     save_file(ds, file_location)
-    save_syntax_file(ds, syntax_location)
+    save_syntax_file(ds, syntax_location, weight_name, unique_key)
 
     return file_location, syntax_location, crosstabs, report
 

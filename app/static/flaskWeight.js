@@ -2,12 +2,14 @@ $('document').ready(()=>{
     let metaDataList;
     let metaDataObj;
     let factorList = [];
+    let datasetName;
+    let file;
 
     $('#file').change(function(){  
             // get file and send it when one is selected  
             $('#file-select-container').append('<p class="status">Uploading...</p>'); 
             $('#error').text('');
-            let file = getFile();
+            [datasetName, file] = getFile();
             sendFile(file);
     });
 
@@ -24,7 +26,7 @@ $('document').ready(()=>{
                 if (results.success === "true"){
                     metaDataList = results.meta_data_array;
                     metaDataObj = results.meta_data_obj;
-                    displaySelectionView(metaDataObj, metaDataList);
+                    displaySelectionView(metaDataObj, metaDataList, datasetName);
                 } else {
                     $('#error').text(results.message);
                 }
@@ -149,6 +151,7 @@ $('document').ready(()=>{
                 targetVariables: factorList,
                 targetMapping: targets,
                 groupingVariable: groupVar,
+                weightName: $('#weight-name').val() || "weight"
             }
 
             $.ajax('/compute-weights', {

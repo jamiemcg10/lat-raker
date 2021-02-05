@@ -6,16 +6,18 @@ function getFile(){
 
     let formData = new FormData(); 
     let savFile = $('#file')[0].files[0];
+    let datasetName = savFile.name;
     formData.append('file', savFile);
-    return formData;
+    return [datasetName, formData];
 }
 
-function displaySelectionView(metaDataObj, metaDataList){
+function displaySelectionView(metaDataObj, metaDataList, datasetName){
     // clear file selection screen and display forms for selecting weighting 
     // variables and entering targets
 
     console.log(metaDataObj);
     clearScreen();
+    $('body').append(`<p class="filename">${datasetName}</p>`);
     $('body').append(`<ul>${weightingDirections}</ul>`);
     $('body').append('<p>Choose question to group by:</p>')
     appendQuestionSelectionList('group-select', metaDataList);
@@ -26,7 +28,9 @@ function displaySelectionView(metaDataObj, metaDataList){
     $('body').append('<button class="button is-ghost" id="add-factor">Add</button>')
     
     $('body').append('<div id="weighting-factors"></div>')
-    $('body').append('<button class="button is-solid" id="compute">Compute weights</button><p class="error" id="error"></p>')
+    $('body').append('<button class="button is-solid" id="compute">Compute weights</button>');
+    $('body').append('<div class="input input-group inline"><label for="weight-name">Weight name:</label><input id="weight-name" value="weight"></div>');
+    $('body').append('<p class="error" id="error"></p>');
 
 }
 
@@ -98,15 +102,34 @@ function displayResultsView(fileLocation, syntaxLocation, crosstabs, report){
 function clearScreen(){
     // remove everything except the h1 title from the screen
 
-    $('p').remove();
+    $('p:not(.filename)').remove();
     $('select').remove();
     $('button').remove();
     $('#grouping-var').remove();
     $('#weighting-factors').remove();
     $('#file-select-container').remove();
     $('.input').remove();
+    $('label').remove();
     $('ul').remove();
 }
+
+$(document).on("keypress", "#weight-name", (event)=>{  // prevent invaid weight name characters
+	
+    let pattern = /\w/;
+    
+    if (!pattern.test(event.key)){
+      event.preventDefault();
+    }
+  
+  });
+  
+  $(document).on("keyup", "#weight-name", (event)=>{  // remove number at beginning of weight name
+      
+      if (Number.isInteger(Number.parseInt(event.target.value[0]))){
+      $("#weight-name").val(event.target.value.substring(1));
+    }
+  
+  });
 
 function validateInputs(numFactors, groupVar, factorList){
     // make sure inputs are valid for weighting

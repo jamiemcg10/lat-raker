@@ -58,11 +58,14 @@ def compute_weights():
     target_variables = req_data['targetVariables']
     target_mapping = req_data['targetMapping']
     grouping_variable = req_data['groupingVariable']
+    weight_name = req_data['weightName']
+
+    print(weight_name)
 
     file_name = session['filename'] ## make special error if this doesn't exist
 
     try:
-        file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name)
+        file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name, weight_name=weight_name)
         session['weighted_location'] = file_location
         session['syntax_location'] = syntax_location
         return {'success': 'true', 'location': file_location, 'syntax': syntax_location, 'crosstabs': crosstabs, 'report': report}

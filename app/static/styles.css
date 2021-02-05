@@ -13,6 +13,7 @@ body {
 
 #compute {
     margin-top: 5vh;
+    margin-right: 2vw;
 }
 
 #Crosstabs {
@@ -44,6 +45,7 @@ body {
 
 #error {
     color: red;
+    display: block;
 }
 
 .factor {
@@ -57,6 +59,12 @@ body {
 
 #file-form {
     margin-top: 25px;
+}
+
+.filename {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-style: italic;
 }
     
 #grouping-var {
@@ -92,6 +100,11 @@ input[type="text"] {
 .factor > label {
     margin-left: 2vw;
     margin-right: 1vw;
+}
+
+[for="weight-name"] {
+    font-size: 12px !important;
+    font-weight: 500 !important;
 }
 
 li {
@@ -134,4 +147,10 @@ ul {
 #weighting-factors {
     margin-top: 2vh;
     width: max-content;
+}
+
+#weight-name {
+    height: 30px;
+    width: 125px;
+    display: block;
 }
