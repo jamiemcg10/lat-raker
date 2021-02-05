@@ -54,9 +54,7 @@ def add_group(ds, scheme, group_label, var, val, targets):
   
     filter = "%s == %s" %(var, val)  # filter expression
     group_targets = redistribute_target_pcts(ds, var, val, targets)
-    print("GROUP TARGETS:")
-    print(group_targets)
-    scheme.add_group(name=group_label, filter_def=filter, targets=targets)
+    scheme.add_group(name=group_label, filter_def=filter, targets=group_targets)
 
 
 def create_scheme(name="rake_scheme"):
@@ -103,7 +101,6 @@ def save_syntax_file(ds, path):
         Returns: None
     """
 
-    print(path)
     with open(path, 'w') as f:
         for row in ds[['uuid', 'weight']].itertuples():
             f.write("if (uuid='%s') weight=%03.20f.\n" %(row.uuid, row.weight))
@@ -210,6 +207,8 @@ def redistribute_target_pcts(ds, var, val, targets):
             for key in value_dict:
                 value_dict[key] += redistribute / len(value_dict)  ## add an equal proportion of the points to be redistributed to each remaining dict value
             group_targets[i] = {target_var: value_dict}
+        for key in keys_to_remove:
+            value_dict[key] = 0.0 ## add 0.0 as target
 
     return group_targets
 
