@@ -1,5 +1,6 @@
 from app import app
 from flask import render_template, url_for, request, session, send_from_directory, send_file
+from flask_cors import cross_origin
 import create_rim_weight as engine
 import quantipy as qp 
 import pandas as pd
@@ -16,11 +17,15 @@ def index():
     return render_template('index.html')
 
 @app.route('/get-meta', methods=['POST'])
+@cross_origin()
 def process_file():
     try: 
         session['active'] = True
+        print(request.files)
         file = request.files['file']  # .sav file user selected
         filename = file.filename
+        print("name of file:")
+        print(filename)
         session['filename'] = filename
         # create temp directory if it does not exist
         if not os.path.isdir('./temp'):
@@ -52,6 +57,7 @@ def process_file():
 
 
 @app.route('/compute-weights', methods=['POST'])
+@cross_origin()
 def compute_weights():
     req_data = request.json
     print(req_data)
@@ -62,9 +68,11 @@ def compute_weights():
 
     print(weight_name)
 
-    file_name = session['filename'] ## make special error if this doesn't exist
-
-    try:
+    ### TEMPORARY FIX WHILE I FINISH CONVERTING TO VUE
+    print(session)
+    #file_name = session['filename'] ## make special error if this doesn't exist
+    file_name = "AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav"
+    try:        
         file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name, weight_name=weight_name)
         session['weighted_location'] = file_location
         session['syntax_location'] = syntax_location
@@ -76,12 +84,14 @@ def compute_weights():
         return {'success': 'false'}
 
 @app.route('/temp/<path:filename>', methods=['GET'])
+@cross_origin()
 def download(filename):
     # serve .sav file for user to download
     uploads = os.path.join(os.path.dirname(app.root_path), 'temp')
     return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
 
 @app.route('/close', methods=['GET', 'POST'])
+@cross_origin()
 def close_resources():
     print('Closing resources')
     # delete sav files
