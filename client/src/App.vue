@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-on:beforeunload="closeResources">
       <h1>RIM Weight Calculator</h1>
       <p class="filename" v-if="datasetName">{{ datasetName }}</p>
       <component 
@@ -62,7 +62,7 @@ export default {
     },
     closeResources(){
       // when user closes tab/window, tell server to delete files and session
-      navigator.sendBeacon('/close');
+      navigator.sendBeacon(eventBus.baseUrl+'close');
     }
   }
 }
@@ -74,62 +74,13 @@ export default {
       display: block;
   }
 
-  #add-factor {
-      margin-left: 1vw;
-  }
-
   body {
       padding: 25px;
-  }
-
-  #compute {
-      margin-top: 5vh;
-      margin-right: 2vw;
-  }
-
-  #Crosstabs {
-      margin-top: 5vh;
-      max-width: fit-content;
-  }
-
-  #Crosstabs .report-row {
-      display: flex;
-      justify-content: space-between;
-  }
-
-  .xt-labels { /* override #Crosstabs .report-row */
-      justify-content: initial !important;
-  }
-
-  .xt-labels span {
-      width: initial;
-  }
-
-
-  #Crosstabs .text { /* override #Crosstabs .report-row */
-      justify-content: initial;
-  }
-
-  #download-box {
-      margin: 20px 0px;
   }
 
   #error {
       color: red;
       display: block;
-  }
-
-  .factor {
-      margin: 20px 0px;
-  }
-
-  .factor p:first-child {
-      margin-right: 35px;
-      font-weight: bold;
-  }
-
-  #file-form {
-      margin-top: 25px;
   }
 
   .filename {
@@ -138,10 +89,6 @@ export default {
       font-style: italic;
   }
       
-  #grouping-var {
-      margin-bottom: 35px;
-  }
-
   h1 {
       margin-bottom: 25px;
   }
@@ -159,54 +106,8 @@ export default {
       margin-right: 25px;
   }
 
-  .factor * {
-      display: inline;
-  }
-
-  .factor > input {
-      width: 40px;
-      margin-right: 3px;
-  }
-
-  .factor > label {
-      margin-left: 2vw;
-      margin-right: 1vw;
-  }
-
-  [for="weight-name"] {
-      font-size: 12px !important;
-      font-weight: 500 !important;
-  }
-
   li {
       margin: 0px 13px;
-  }
-
-  .remove-factor {
-      text-decoration: underline;
-      color: blue;
-      float: right;
-      margin-left: 35px;
-  }
-
-  .remove-factor:hover {
-      cursor: pointer;
-  }
-
-  .report-row :first-child {
-      width: 190px;
-      display: inline-block;
-      font-weight: bold;
-  }
-
-
-  select {
-      margin-bottom: 3vh;
-  }
-
-  span + span {
-      width: 100px;
-      display: inline-block;
   }
 
   ul {
@@ -215,14 +116,4 @@ export default {
       margin-bottom: 3vh;
   }
 
-  #weighting-factors {
-      margin-top: 2vh;
-      width: max-content;
-  }
-
-  #weight-name {
-      height: 30px;
-      width: 125px;
-      display: block;
-  }
 </style>

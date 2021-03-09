@@ -73,5 +73,41 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  #Crosstabs {
+      margin-top: 5vh;
+      max-width: fit-content;
+  }
+
+  #Crosstabs .report-row {
+      display: flex;
+      justify-content: space-between;
+  }
+
+  .xt-labels { /* override #Crosstabs .report-row */
+    justify-content: initial !important;
+  }
+
+  .xt-labels span {
+      width: initial;
+  }
+
+  #Crosstabs .text { /* override #Crosstabs .report-row */
+    justify-content: initial;
+  }
+
+  #download-box {
+      margin: 20px 0px;
+  }
+
+  .report-row :first-child {
+    width: 190px;
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  span + span {
+    width: 100px;
+    display: inline-block;
+  }
 </style>

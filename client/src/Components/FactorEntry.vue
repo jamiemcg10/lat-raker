@@ -2,7 +2,8 @@
   <div v-bind:id="data.name" class="factor">
     <p>{{ data.name }}</p>
     <div class="input-group"
-        v-for="val in data.values">
+        v-for="val in data.values"
+        v-bind:key="val">
       <label v-bind:class="data.name+'-val-label'" v-bind:for="data.name+'_'+val.value">{{ val.value }}</label>
       <label v-bind:class="data.name+'-val-label'" v-bind:for="data.name+'_'+val.value">{{ Object.entries(val.text)[0][1] }}</label>
       <div class="input">
@@ -30,7 +31,7 @@ export default {
   },
   props: ['data', 'removeFactor'],
   methods: {
-    validateInput($event){
+    validateInput(event){
       if (isNaN(parseInt(event.key)) && event.key !== "."){
           event.preventDefault();
       }
@@ -50,5 +51,38 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+  .factor {
+      margin: 20px 0px;
+  }
+
+  .factor p:first-child {
+      margin-right: 35px;
+      font-weight: bold;
+  }
+
+  .factor * {
+      display: inline;
+  }
+
+  .factor > input {
+      width: 40px;
+      margin-right: 3px;
+  }
+
+  .factor > label {
+      margin-left: 2vw;
+      margin-right: 1vw;
+  }
+  
+  .remove-factor {
+    text-decoration: underline;
+    color: blue;
+    float: right;
+    margin-left: 35px;
+  }
+
+  .remove-factor:hover {
+      cursor: pointer;
+  }
 </style>

@@ -7,9 +7,16 @@
               type="file" 
               name="file" 
               id="file" 
-              accept=".sav" 
-              required 
-              v-on:change="fileSelected($event)" >
+              accept=".sav"
+              v-on:change="fileSelected($event)"
+              v-bind:ref="'fileInput'"    
+              v-show="false"            
+              required >
+              
+              <button 
+              class="button is-ghost"
+              v-on:click="selectFile"
+              type="button">Choose File</button>
             <p>{{ statusText }}</p>
             <p class="error" id="error">{{ errorText }}</p>
         </div>
@@ -41,39 +48,45 @@ export default {
       
     },
     getFile(){
-          // create FormData object with selected file to send to server
-          this.formData = new FormData(); 
-          this.datasetName = this.savFile.name;
-          this.formData.append('file', this.savFile);
+      // create FormData object with selected file to send to server
+      this.formData = new FormData(); 
+      this.datasetName = this.savFile.name;
+      this.formData.append('file', this.savFile);
       
     },
+    selectFile(){
+      this.$refs.fileInput.click();
+    },
     sendFile(){
-        // send file to server using ajax request
-        $.ajax('/get-meta', {
-            method: 'POST',
-            data: this.formData,
-            processData: false,
-            contentType: false, 
-            success: (results)=>{
-                console.log(results);
-                this.statusText = ''
-                if (results.success === "true"){
-                    eventBus.metaDataObj = results.meta_data_obj;
-                    eventBus.metaDataList = results.meta_data_array;
-                    this.$emit('dataLoaded', this.datasetName);
-                } else {
-                    this.errorText = results.message;
-                }
-            },
-            error: (jqXHR, textStatus, errorThrown)=>{
-                console.log(`${errorThrown} - ${textStatus}`); 
-                this.errorText = "Sorry, there was a problem processing your data.";
-            }
-        });
-      }
+      // send file to server using ajax request
+      $.ajax(eventBus.baseUrl+'get-meta', {
+          method: 'POST',
+          data: this.formData,
+          processData: false,
+          contentType: false, 
+          success: (results)=>{
+              console.log(results);
+              this.statusText = ''
+              if (results.success === "true"){
+                  eventBus.metaDataObj = results.meta_data_obj;
+                  eventBus.metaDataList = results.meta_data_array;
+                  this.$emit('dataLoaded', this.datasetName);
+              } else {
+                  this.errorText = results.message;
+              }
+          },
+          error: (jqXHR, textStatus, errorThrown)=>{
+              console.log(`${errorThrown} - ${textStatus}`); 
+              this.errorText = "Sorry, there was a problem processing your data.";
+          }
+      });
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
+  #file-form {
+    margin-top: 25px;
+  }
 </style>

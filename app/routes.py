@@ -1,6 +1,11 @@
 from app import app
 from flask import render_template, url_for, request, session, send_from_directory, send_file
-from flask_cors import cross_origin
+
+try:
+    from flask_cors import cross_origin
+except:
+    print("Could not import flask_cors")
+
 import create_rim_weight as engine
 import quantipy as qp 
 import pandas as pd
@@ -14,10 +19,10 @@ def index():
     # reset and initialize session
     session.clear()
     session['active'] = None
+    print(session)
     return render_template('index.html')
 
 @app.route('/get-meta', methods=['POST'])
-@cross_origin()
 def process_file():
     try: 
         session['active'] = True
@@ -57,7 +62,6 @@ def process_file():
 
 
 @app.route('/compute-weights', methods=['POST'])
-@cross_origin()
 def compute_weights():
     req_data = request.json
     print(req_data)
@@ -70,8 +74,8 @@ def compute_weights():
 
     ### TEMPORARY FIX WHILE I FINISH CONVERTING TO VUE
     print(session)
-    #file_name = session['filename'] ## make special error if this doesn't exist
-    file_name = "AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav"
+    file_name = session['filename'] ## make special error if this doesn't exist
+    #file_name = "AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav"
     try:        
         file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name, weight_name=weight_name)
         session['weighted_location'] = file_location
@@ -84,14 +88,12 @@ def compute_weights():
         return {'success': 'false'}
 
 @app.route('/temp/<path:filename>', methods=['GET'])
-@cross_origin()
 def download(filename):
     # serve .sav file for user to download
     uploads = os.path.join(os.path.dirname(app.root_path), 'temp')
     return send_from_directory(directory=uploads, filename=filename, as_attachment=True)
 
 @app.route('/close', methods=['GET', 'POST'])
-@cross_origin()
 def close_resources():
     print('Closing resources')
     # delete sav files

@@ -263,29 +263,41 @@ def main(spss_filename):
     ### OPEN SPSS DATA
     # edit main() based on desired weighting scheme
     ds = qp.DataSet(spss_filename)
-    ds.read_spss('./' + spss_filename, ioLocale=None, detect_dichot=False)
+    # ds.read_spss('./' + spss_filename, ioLocale=None, detect_dichot=False)
+    ds.read_spss('C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename, ioLocale=None, detect_dichot=False)
 
     scheme = create_scheme()
     
     ### ADD TARGETS TO SCHEME
-    all_targets = []
-    #add_target("gender_targets", "S2", {1: 50.0, 2: 50.0}, all_targets)
-    add_target("age_targets", "AgeGender", {1: 25.0, 2: 25.0, 3: 25.0, 4: 25.0}, all_targets)
-    apply_targets(scheme, all_targets)
+    tv_only_targets = []
+    tv_social_targets = []
 
-    ds_group = ds[['CellXViewer', 'AgeGender']]
-    add_group(ds_group, scheme, "cat 1", "CellXViewer", "0", all_targets)
-    add_group(ds_group, scheme, "cat 2", "CellXViewer", "1", all_targets)
-    add_group(ds_group, scheme, "cat 3", "CellXViewer", "2", all_targets)
-    add_group(ds_group, scheme, "cat 4", "CellXViewer", "3", all_targets)
-    add_group(ds_group, scheme, "cat 5", "CellXViewer", "4", all_targets)
+    #add_target(name, variable, dictionary_of_targets, target_list_to_add_to)
+    add_target("age_targets", "S1_RC", {1: 46.6, 2: 53.4}, tv_only_targets)
+    add_target("age_targets", "S1_RC", {1: 66.0, 2: 34.0}, tv_social_targets)
+    add_target("gender_targets", "S2", {1: 32.4, 2: 67.6}, tv_only_targets)
+    add_target("gender_targets", "S2", {1: 17.0, 2: 83.0}, tv_social_targets)
+    add_target("ethnicity_targets", "Ethnicity", {1: 80.4, 2: 4.7, 3: 8.8, 4: 6.1}, tv_only_targets)
+    add_target("ethnicity_targets", "Ethnicity", {1: 54.2, 2: 10.5, 3: 17.0, 4: 18.3}, tv_social_targets)
+    add_target("usage_targets", "A10r1", {0: 54.1, 1: 45.9}, tv_only_targets)
+    add_target("usage_targets", "A10r1", {0: 35.9, 1: 64.1 }, tv_social_targets)
+    add_target("frequency_targets", "A11_KFC", {0: 73.0, 1: 27.0}, tv_only_targets)
+    add_target("frequency_targets", "A11_KFC", {0: 52.9, 1: 47.1 }, tv_social_targets)
+    # apply_targets(scheme, tv_only_targets)
+    # apply_targets(scheme, tv_social_targets)
+
+    ds_group = ds[['CellSocial', 'S1_RC', 'S2', 'Ethnicity', 'A10r1', 'A11_KFC']]
+    add_group(ds_group, scheme, "tv only primary", "CellSocial", "2", tv_only_targets)
+    add_group(ds_group, scheme, "tv only secondary", "CellSocial", "3", tv_only_targets)
+    add_group(ds_group, scheme, "tv+social primary", "CellSocial", "5", tv_social_targets)
+    add_group(ds_group, scheme, "tv+social secondary", "CellSocial", "6", tv_social_targets)
 
     ds.weight(scheme, weight_name="weight", unique_key='uuid')
 
-    #check_weights(ds, ['AgeGender'], group='CellXViewer')
+    check_weights(ds, ['S1_RC', 'S2', 'Ethnicity', 'A10r1', 'A11_KFC'], group='CellSocial')
 
-    save_file(ds, './' + spss_filename + '_weighted.sav')
-    save_syntax_file(ds, './' + spss_filename + '_syntax.sps')
+    save_file(ds, 'C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename + '_weighted.sav')
+    save_syntax_file(ds, 'C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename + '_syntax.sps')
 
 if __name__ == "__main__":
-    main('AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav')
+    main('AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA and weight V3.sav')

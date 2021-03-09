@@ -12,7 +12,8 @@ export const eventBus = new Vue({
       datasetName: '',
       metaDataList: null,
       metaDataObj: null,
-      dataLoaded: false
+      dataLoaded: false,
+      baseUrl: 'http://127.0.0.1:5000/'
     }
   }
 });

@@ -48,14 +48,14 @@
     <button 
       class="button is-solid" 
       id="compute"
-      v-on:click="computeWeights">
+      v-on:click="computeWeights($event)">
         Compute weights
     </button>
     <div class="input input-group inline">
       <label for="weight-name">Weight name:</label>
       <input 
         id="weight-name" 
-        v-model:value="weightName"
+        v-model="weightName"
         v-on:keypress="removeInvalidVarChars"
         v-on:keyup="removeStartingNum"
       >
@@ -104,7 +104,7 @@ export default {
           this.weightName = $event.target.value.substring(1);
         }
     },
-    addFactor($event){
+    addFactor(){
       // check that variable isn't already being used and add a row to input targets for it
       if (this.factorList.includes(this.qSelected) || this.qSelected === null || this.qSelected === ''){ // check to make sure variable isn't already added
           return;
@@ -136,7 +136,7 @@ export default {
     updateTargets(q, data){
       this.targets[q] = data;
     },
-    computeWeights(){
+    computeWeights(event){
       // send targets to server to compute weights
       this.errorText = ''; // remove any previous errors
       let numFactors = this.factorList.length;
@@ -147,7 +147,13 @@ export default {
           return;
       }
 
-      if (this.validateTargets() && Object.entries(this.targets).length > 0){
+      if (!(this.validateTargets())){
+        return;
+      } else if (!Object.entries(this.targets).length > 0){
+        this.errorText = 'You must set targets for at least 1 variable.';
+        return;
+      }
+      else {
         if (this.groupSelected !== '' && this.groupSelected !== null){
             this.groupSelected = eventBus.metaDataObj[this.groupSelected] // replace variable with metadata for that variable
         }
@@ -159,7 +165,7 @@ export default {
             weightName: this.weightName || "weight"
         }
 
-        $.ajax('/compute-weights', {
+        $.ajax(eventBus.baseUrl+'compute-weights', {
             method: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
@@ -177,10 +183,7 @@ export default {
                 this.errorText = 'Sorry, there was a problem processing your data';
             }
         }); 
-      } else {
-        // error if there are no targets
-        this.errorText = 'Sorry, there was a problem processing your data. Please make sure you have chosen at least one factor.';
-      }     
+      }    
     },
     validateTargets(){
       // loop through factors, insert them into an object and validate each sum
@@ -188,7 +191,7 @@ export default {
         let q = this.targets[this.factorList[i]];
             if(!this.sumsTo100(Object.values(q))){
                 this.errorText = `The target percentages for ${this.factorList[i]} must add up to 100.`;
-                return false; // return null so weights aren't computed
+                return null; // return null so weights aren't computed
             }
         }
 
@@ -197,7 +200,6 @@ export default {
     },
     validateInputs(numFactors){
       // make sure inputs are valid for weighting
-
       if (numFactors === 0){
           this.errorText = "You need to add at least one factor";
           return false;
@@ -243,7 +245,36 @@ export default {
 </script>
 
 <style scoped>
+  #add-factor {
+      margin-left: 1vw;
+  }
+
+  #compute {
+    margin-top: 5vh;
+    margin-right: 2vw;
+  }
+
+  [for="weight-name"] {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+  }
+
+  #grouping-var {
+    margin-bottom: 35px;
+  }
+
   option:disabled {
     color: lightgray !important;
+  }
+
+  #weighting-factors {
+    margin-top: 2vh;
+    width: max-content;
+  }
+
+  #weight-name {
+    height: 30px;
+    width: 125px;
+    display: block;
   }
 </style>

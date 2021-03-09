@@ -1,10 +1,16 @@
 from flask import Flask
-from flask_cors import CORS, cross_origin
+try:
+    from flask_cors import CORS, cross_origin
+except:
+    print("can't import flask_cors")
 import os
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+try:
+    cors = CORS(app, resources=r'/*')
+    app.config['CORS_HEADERS'] = 'Content-Type'
+except:
+    print("flask_cors not imported")
 
 app.secret_key = os.environ['SECRET_KEY']
 
