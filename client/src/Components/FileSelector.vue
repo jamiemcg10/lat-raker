@@ -16,8 +16,9 @@
               <button 
               class="button is-ghost"
               v-on:click="selectFile"
-              type="button">Choose File</button>
-            <p>{{ statusText }}</p>
+              type="button"
+              v-html="selectFileBtn"
+              ></button>
             <p class="error" id="error">{{ errorText }}</p>
         </div>
     </form>
@@ -29,18 +30,18 @@ import { eventBus } from '../main.js';
 export default {
   data(){
     return {
-      statusText: '',
       errorText: '',
       file: null,
       savFile: '',
       formData: null,
-      datasetName: ''
+      datasetName: '',
+      selectFileBtn: 'Choose File'
     }
   },
   methods: {
     fileSelected($event){
+      this.selectFileBtn = '<div class="loader loader--button"></div>';
       this.savFile = $event.target.files[0];
-      this.statusText = 'Uploading...'
       this.errorText = '';
       
       this.getFile();
@@ -66,7 +67,6 @@ export default {
           contentType: false, 
           success: (results)=>{
               console.log(results);
-              this.statusText = ''
               if (results.success === "true"){
                   eventBus.metaDataObj = results.meta_data_obj;
                   eventBus.metaDataList = results.meta_data_array;

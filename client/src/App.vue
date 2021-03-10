@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-on:beforeunload="closeResources">
+  <div id="app">
       <h1>RIM Weight Calculator</h1>
       <p class="filename" v-if="datasetName">{{ datasetName }}</p>
       <component 
@@ -64,6 +64,9 @@ export default {
       // when user closes tab/window, tell server to delete files and session
       navigator.sendBeacon(eventBus.baseUrl+'close');
     }
+  },
+  created(){
+    window.addEventListener('beforeunload', this.closeResources);
   }
 }
 </script>

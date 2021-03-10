@@ -45,13 +45,7 @@
         v-on:update="updateTargets(q, $event)">
       </factor-entry>
     </div>
-    <button 
-      class="button is-solid" 
-      id="compute"
-      v-on:click="computeWeights($event)">
-        Compute weights
-    </button>
-    <div class="input input-group inline">
+    <div class="input input-group inline" style="width: fit-content;" v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">
       <label for="weight-name">Weight name:</label>
       <input 
         id="weight-name" 
@@ -60,6 +54,12 @@
         v-on:keyup="removeStartingNum"
       >
     </div>
+    <button 
+      class="button is-solid" 
+      id="compute"
+      v-on:click="computeWeights($event)"
+      v-html="computeBtn">
+    </button>
     <p class="error" id="error">{{ errorText }}</p>
   </div>
 </template>
@@ -77,6 +77,7 @@ export default {
       factorList: [],
       errorText: '',
       targets: {},
+      computeBtn: "Compute weights"
     }
   },
   methods: {
@@ -138,6 +139,7 @@ export default {
     },
     computeWeights(event){
       // send targets to server to compute weights
+      this.computeBtn = '<div class="loader loader--button"></div>';  // add loader to compute button
       this.errorText = ''; // remove any previous errors
       let numFactors = this.factorList.length;
       //MIGHT NEED TO REPLACE let factors = $('.factor');
@@ -236,7 +238,7 @@ export default {
     }
   },
   components: {
-    'factor-entry': FactorEntry
+    'factor-entry': FactorEntry,
   },
   created(){
     this.appendQuestionSelectionList();

@@ -1,0 +1,21 @@
+{
+  "name": "rim-weighting",
+  "version": "1.0.0",
+  "description": "1. Edit the main method of create_rim_weight.py\r 2. Run the flask server (<code>flask run</code>) to use a GUI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm run build",
+    "start": "npm run build && flask run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamiemcg10/lat-raker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamiemcg10/lat-raker/issues"
+  },
+  "homepage": "https://github.com/jamiemcg10/lat-raker#readme"
+}

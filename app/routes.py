@@ -24,7 +24,8 @@ def index():
 
 @app.route('/get-meta', methods=['POST'])
 def process_file():
-    try: 
+    try:         
+        print(session)
         session['active'] = True
         print(request.files)
         file = request.files['file']  # .sav file user selected
@@ -38,6 +39,7 @@ def process_file():
             os.system(f"mkdir {'./temp'}")
         file.save('./temp/%s' %(filename))
         print("Temporary file saved")
+        print(session)
 
 
         # read dataset from saved .sav file
