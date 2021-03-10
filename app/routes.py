@@ -74,10 +74,8 @@ def compute_weights():
 
     print(weight_name)
 
-    ### TEMPORARY FIX WHILE I FINISH CONVERTING TO VUE
     print(session)
     file_name = session['filename'] ## make special error if this doesn't exist
-    #file_name = "AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav"
     try:        
         file_location, syntax_location, crosstabs, report = engine.weight_data(target_variables, target_mapping, grouping_variable, file_name, weight_name=weight_name)
         session['weighted_location'] = file_location

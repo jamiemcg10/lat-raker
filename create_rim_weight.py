@@ -1,4 +1,5 @@
 import quantipy as qp 
+from quantipy.core.tools.dp.io import read_spss
 from datetime import datetime
 
 def test():
@@ -90,9 +91,10 @@ def save_file(ds, path):
         Returns: None
     """
 
+    print(ds.meta())
     ds.write_spss(path)
 
-def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid'):
+def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid', description=None):
     """
         Purpose: Save a syntax file that can be run to re-create weight
         Parameters:
@@ -105,6 +107,8 @@ def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid'):
 
     weight_row = "row." + weight_name
     with open(path, 'w') as f:
+        if (description):
+            f.write(description)
         for row in ds[[unique_key, weight_name]].itertuples(index=False):
             f.write("if (%s='%s') %s=%03.20f.\n" %(unique_key, row[0], weight_name, row[1]))
 
@@ -124,8 +128,13 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
             report - weighting summary
     """ 
 
+    # text description of weighting scheme
+    weighting_desc = "* Weighting targets: " + str(mapping) + "\n* Grouping variables: " + (str(grouping['name']) if grouping else "None") + "\n\n"
+
     ds = qp.DataSet('data')
     ds.read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
+    print(ds.meta())
+    #meta, data = read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
 
     scheme = create_scheme("rake_scheme")
     
@@ -158,6 +167,7 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
         grouping = None # set for crosstabs
     
     ds.weight(scheme, weight_name=weight_name, unique_key=unique_key)
+    ds[weight_name].fillna(1, inplace=True)
 
     ### Relabel weight
     weight_label_key = list(ds.meta()['columns'][weight_name]['text'])[0] ## get key from weight dict
@@ -173,7 +183,7 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
     report = generate_report(scheme)
 
     save_file(ds, file_location)
-    save_syntax_file(ds, syntax_location, weight_name, unique_key)
+    save_syntax_file(ds, syntax_location, weight_name, unique_key, weighting_desc)
 
     return file_location, syntax_location, crosstabs, report
 
@@ -293,6 +303,7 @@ def main(spss_filename):
     add_group(ds_group, scheme, "tv+social secondary", "CellSocial", "6", tv_social_targets)
 
     ds.weight(scheme, weight_name="weight", unique_key='uuid')
+    ds["weight"].fillna(1, inplace=True)
 
     check_weights(ds, ['S1_RC', 'S2', 'Ethnicity', 'A10r1', 'A11_KFC'], group='CellSocial')
 
