@@ -2,8 +2,9 @@
   <div v-bind:id="data.name" class="factor">
     <p>{{ data.name }}</p>
     <div class="input-group"
-        v-for="val in data.values"
-        v-bind:key="val">
+        v-for="(val, i) in data.values"
+        v-bind:key="i"
+    >
       <label v-bind:class="data.name+'-val-label'" v-bind:for="data.name+'_'+val.value">{{ val.value }}</label>
       <label v-bind:class="data.name+'-val-label'" v-bind:for="data.name+'_'+val.value">{{ Object.entries(val.text)[0][1] }}</label>
       <div class="input">

@@ -168,6 +168,7 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
     
     ds.weight(scheme, weight_name=weight_name, unique_key=unique_key)
     ds[weight_name].fillna(1, inplace=True)
+    ds.meta()['measureLevels'][weight_name] = 'scale'
 
     ### Relabel weight
     weight_label_key = list(ds.meta()['columns'][weight_name]['text'])[0] ## get key from weight dict

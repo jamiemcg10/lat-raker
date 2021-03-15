@@ -6,8 +6,6 @@
         v-bind:is="loadedComponent"
         v-on:dataLoaded="displaySelectionView($event)"
         v-on:resultsIn="displayResultsView($event)"
-        v-bind:report="report"
-        v-bind:crosstabs="crosstabs"
         v-bind:location="location"
         v-bind:syntax="syntax">
       </component>
@@ -17,9 +15,9 @@
 
 <script>
 import { eventBus } from './main.js';
-import FileSelector from './components/FileSelector.vue';
-import SchemeDefinition from './components/SchemeDefinition.vue';
-import Results from './components/Results.vue';
+import FileSelector from './Components/FileSelector.vue';
+import SchemeDefinition from './Components/SchemeDefinition.vue';
+import Results from './Components/Results.vue';
 export default {
   data(){
     return {
@@ -43,19 +41,17 @@ export default {
 
     },
     displayResultsView(event){
-      this.crosstabs = event.crosstabs;
-      this.report = event.report;
       this.syntax = event.syntax;
       this.location = event.location;
       
       // fix spacing in text
       // split the report and crosstabs into arrays by new line
       // split each report and crosstabs line line into arrays by tab (3+ spaces)
-      let spaceRegex = /\s{3,}/;
-      this.report = this.report.split("\n");  
-      this.report = this.report.map(row => row.split(spaceRegex)); 
-      this.crosstabs = this.crosstabs.split("\n");  
-      this.crosstabs = this.crosstabs.map(row => row.split(spaceRegex));
+      let spaceRegex = /\s{2,}/;
+      eventBus.report = eventBus.report.split("\n");  
+      eventBus.report = eventBus.report.map(row => row.split(spaceRegex)); 
+      eventBus.crosstabs = eventBus.crosstabs.split("\n");  
+      eventBus.crosstabs = eventBus.crosstabs.map(row => row.split(spaceRegex));
       
       this.loadedComponent = 'results';
       

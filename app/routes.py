@@ -19,13 +19,11 @@ def index():
     # reset and initialize session
     session.clear()
     session['active'] = None
-    print(session)
     return render_template('index.html')
 
 @app.route('/get-meta', methods=['POST'])
 def process_file():
     try:         
-        print(session)
         session['active'] = True
         print(request.files)
         file = request.files['file']  # .sav file user selected
@@ -66,7 +64,7 @@ def process_file():
 @app.route('/compute-weights', methods=['POST'])
 def compute_weights():
     req_data = request.json
-    print(req_data)
+    # print(req_data)
     target_variables = req_data['targetVariables']
     target_mapping = req_data['targetMapping']
     grouping_variable = req_data['groupingVariable']
@@ -109,12 +107,12 @@ def close_resources():
         try:
             os.remove(weighted_file_name)
         except FileNotFoundError:
-            print("This file is no longer in the folder")
+            print("This weighted file is no longer in the folder")
     if syntax_file_name:
         try:
             os.remove(syntax_file_name)
         except FileNotFoundError:
-            print("This file is no longer in the folder")
+            print("This syntax file is no longer in the folder")
 
     # destroy session
     session.clear()

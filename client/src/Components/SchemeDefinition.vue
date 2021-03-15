@@ -1,19 +1,17 @@
 <template>
   <div>
-    <ul>
-      <li>Choose variables to weight by. These variables must be categorical. Enter the target percentage for each group as a decimal between &gt;0 and 100 (no fractions). Entering a 0 for groups that do not exist in the data is optional.</li>
-      <li>Optional: Choose a variable to group by. The weight will be calculated so that the target percentages are the same for each group in this question (e.g., group by ExposedControl and the weighted percentages for target variables will be the same for exposed respondents and control respondents). You cannot group by a variable that targets are set for.</li>
-      <li>You will get unexpcted results if you weight an existing group to 0.</li>
-    </ul>
+    <scheme-definition-instructions></scheme-definition-instructions>
     
     <p>Choose question to group by:</p>
     <div class="input has-arrow inline">
       <select id="group-select" v-model="groupSelected">
         <option value=""></option>
         <option 
-          v-for="q in singleChoiceList" 
+          v-for="(q, i) in singleChoiceList" 
           v-bind:value="q['name']"
-          v-bind:ref="q['name'] + '_groupBy'">
+          v-bind:ref="q['name'] + '_groupBy'"
+          v-bind:key="i"
+        >
             {{ q['name'] }} : {{ Object.entries(q.text)[0][1] }}
         </option>
       </select>
@@ -25,9 +23,11 @@
       <select id="q-select" v-model="qSelected">
         <option value=""></option>
         <option 
-          v-for="q in singleChoiceList" 
+          v-for="(q, i) in singleChoiceList" 
           v-bind:value="q['name']"
-          v-bind:ref="q['name'] + '_factor'">
+          v-bind:ref="q['name'] + '_factor'"
+          v-bind:key="i"
+        >
             {{ q['name'] }} : {{ Object.entries(q.text)[0][1] }}
         </option>
       </select>
@@ -39,13 +39,14 @@
       v-on:click="addFactor">Add</button>
     <div id="weighting-factors">
       <factor-entry 
-        v-for="q in factorList" 
+        v-for="(q, i) in factorList" 
         v-bind:data="getMetaData(q)"
         v-bind:removeFactor="removeFactor"
+        v-bind:key="i"
         v-on:update="updateTargets(q, $event)">
       </factor-entry>
     </div>
-    <div class="input input-group inline" style="width: fit-content;" v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">
+    <div class="input input-group inline" style="width: fit-content;">
       <label for="weight-name">Weight name:</label>
       <input 
         id="weight-name" 
@@ -67,6 +68,7 @@
 <script>
 import { eventBus } from '../main.js';
 import FactorEntry from './FactorEntry.vue';
+import SchemeDefinitionInstructions from './SchemeDefinitionInstructions.vue';
 export default {
   data(){
     return {
@@ -81,7 +83,7 @@ export default {
     }
   },
   methods: {
-    appendQuestionSelectionList(id, metaDataList){
+    appendQuestionSelectionList(){
     // populate select dropdowns from metadata
 
       eventBus.metaDataList.forEach((question)=>{
@@ -142,7 +144,6 @@ export default {
       this.computeBtn = '<div class="loader loader--button"></div>';  // add loader to compute button
       this.errorText = ''; // remove any previous errors
       let numFactors = this.factorList.length;
-      //MIGHT NEED TO REPLACE let factors = $('.factor');
 
       if (!this.validateInputs(numFactors)){
           event.preventDefault();
@@ -157,13 +158,13 @@ export default {
       }
       else {
         if (this.groupSelected !== '' && this.groupSelected !== null){
-            this.groupSelected = eventBus.metaDataObj[this.groupSelected] // replace variable with metadata for that variable
+            eventBus.groupSelected = eventBus.metaDataObj[this.groupSelected] // replace variable with metadata for that variable
         }
 
         let data = { // data to send to server
             targetVariables: this.factorList,
             targetMapping: this.targets,
-            groupingVariable: this.groupSelected,
+            groupingVariable: eventBus.groupSelected,
             weightName: this.weightName || "weight"
         }
 
@@ -175,7 +176,9 @@ export default {
             success: (results)=>{
                 console.log(results);
                 if(results.success === "true"){
-                  this.$emit('resultsIn', {location: results.location, syntax: results.syntax, crosstabs: results.crosstabs, report: results.report})
+                  eventBus.report = results.report;
+                  eventBus.crosstabs = results.crosstabs;
+                  this.$emit('resultsIn', {location: results.location, syntax: results.syntax})
                 } else {
                     this.errorText = 'Sorry, there was a problem processing your data';
                 }
@@ -239,6 +242,7 @@ export default {
   },
   components: {
     'factor-entry': FactorEntry,
+    SchemeDefinitionInstructions
   },
   created(){
     this.appendQuestionSelectionList();
