@@ -141,7 +141,6 @@ export default {
     },
     computeWeights(event){
       // send targets to server to compute weights
-      this.computeBtn = '<div class="loader loader--button"></div>';  // add loader to compute button
       this.errorText = ''; // remove any previous errors
       let numFactors = this.factorList.length;
 
@@ -155,8 +154,8 @@ export default {
       } else if (!Object.entries(this.targets).length > 0){
         this.errorText = 'You must set targets for at least 1 variable.';
         return;
-      }
-      else {
+      } else {
+        this.computeBtn = '<div class="loader loader--button"></div>';  // add loader to compute button
         if (this.groupSelected !== '' && this.groupSelected !== null){
             eventBus.groupSelected = eventBus.metaDataObj[this.groupSelected] // replace variable with metadata for that variable
         }
@@ -271,6 +270,10 @@ export default {
 
   option:disabled {
     color: lightgray !important;
+  }
+
+  .input select {
+    padding: 0px 30px 0px 10px;
   }
 
   #weighting-factors {

@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { eventBus } from '../main.js';
 import ResultsInstructions from './ResultsInstructions.vue';
 import Report from './Report.vue';
 import Crosstabs from './Crosstabs.vue';
@@ -34,7 +33,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   #download-box {
       margin: 20px 0px;
   }
@@ -45,8 +44,4 @@ export default {
     font-weight: bold;
   }
 
-  span + span {
-    width: 100px;
-    display: inline-block;
-  }
 </style>

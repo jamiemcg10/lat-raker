@@ -91,7 +91,6 @@ def save_file(ds, path):
         Returns: None
     """
 
-    print(ds.meta())
     ds.write_spss(path)
 
 def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid', description=None):
@@ -133,7 +132,6 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
 
     ds = qp.DataSet('data')
     ds.read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
-    print(ds.meta())
     #meta, data = read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
 
     scheme = create_scheme("rake_scheme")

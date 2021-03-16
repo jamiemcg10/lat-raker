@@ -32,3 +32,10 @@
         }
     }
 </script>
+
+<style>
+  span + span {
+    width: 100px;
+    display: inline-block;
+  }
+</style>
