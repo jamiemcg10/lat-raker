@@ -13,7 +13,7 @@ export const eventBus = new Vue({
       metaDataList: null,
       metaDataObj: null,
       dataLoaded: false,
-      baseUrl: 'https://latitude-rake-staging.herokuapp.com/',
+      baseUrl: 'https://latitude-rake.herokuapp.com/',
       groupSelected: '',
       report: [],
       crosstabs: []
