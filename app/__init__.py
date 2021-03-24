@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_talisman import Talisman
 try:
     from flask_cors import CORS, cross_origin
 except:
@@ -6,6 +7,8 @@ except:
 import os
 
 app = Flask(__name__)
+Talisman(app)
+
 try:
     cors = CORS(app, resources=r'/*')
     app.config['CORS_HEADERS'] = 'Content-Type'

@@ -4,6 +4,8 @@ chardet==4.0.0
 click==7.1.2
 decorator==4.4.2
 Flask==1.1.2
+Flask-Cors==3.0.10
+flask-talisman==0.7.0
 ftfy==5.5.1
 gunicorn==20.0.4
 idna==2.10
@@ -11,7 +13,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 lxml==4.6.2
 MarkupSafe==1.1.1
-numpy==1.14.5
+numpy==1.19.5
 pandas==0.25.3
 Pillow==8.1.0
 prettytable==2.0.0
