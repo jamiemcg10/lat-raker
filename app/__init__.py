@@ -21,7 +21,8 @@ if (os.environ['ENV'] == 'prod'):
             '\'self\'',
             'https://ajax.googleapis.com', 
             'https://cdn.lr-ingest.io'
-        ]
+        ],
+        'style-src': '*'
     }
     Talisman(app, content_security_policy=csp)
 
