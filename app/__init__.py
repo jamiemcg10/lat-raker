@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_talisman import Talisman
+import os
+
 try:
     from flask_cors import CORS, cross_origin
 except:
@@ -7,7 +9,9 @@ except:
 import os
 
 app = Flask(__name__)
-Talisman(app)
+
+if (os.environ['ENV'] == 'prod'):
+    Talisman(app)
 
 try:
     cors = CORS(app, resources=r'/*')

@@ -1,11 +1,5 @@
 from app import app
 from flask import render_template, url_for, request, session, send_from_directory, send_file
-
-try:
-    from flask_cors import cross_origin
-except:
-    print("Could not import flask_cors")
-
 import create_rim_weight as engine
 import quantipy as qp 
 import pandas as pd

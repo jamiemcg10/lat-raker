@@ -6,6 +6,8 @@ new Vue({
   render: h => h(App)
 })
 
+
+
 export const eventBus = new Vue({
   data(){
     return {
@@ -13,10 +15,14 @@ export const eventBus = new Vue({
       metaDataList: null,
       metaDataObj: null,
       dataLoaded: false,
-      baseUrl: 'https://latitude-rake-staging.herokuapp.com/',
+      baseUrl: '',
       groupSelected: '',
       report: [],
       crosstabs: []
     }
+  },
+  created(){
+    console.log(window.location.href);
+    this.baseUrl = window.location.href;
   }
 });
