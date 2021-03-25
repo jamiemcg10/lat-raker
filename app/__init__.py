@@ -10,24 +10,24 @@ import os
 
 app = Flask(__name__)
 
-if (os.environ['ENV'] == 'prod'):
-    ## set access
-    csp = {
-        'default-src': [
-            '\'self\'',
-            'https://cdn.jsdelivr.net'
-        ],
-        'script-src': [
-            '\'self\'',
-            'https://ajax.googleapis.com', 
-            'https://cdn.lr-ingest.io'
-        ],
-        'style-src': '*'
-    }
-    Talisman(
-        app, 
-        content_security_policy=csp,
-        content_security_policy_nonce_in=['script-src'])
+# if (os.environ['ENV'] == 'prod'):
+#     ## set access
+#     csp = {
+#         'default-src': [
+#             '\'self\'',
+#             'https://cdn.jsdelivr.net'
+#         ],
+#         'script-src': [
+#             '\'self\'',
+#             'https://ajax.googleapis.com', 
+#             'https://cdn.lr-ingest.io'
+#         ],
+#         'style-src': '*'
+#     }
+#     Talisman(
+#         app, 
+#         content_security_policy=csp,
+#         content_security_policy_nonce_in=['script-src'])
 
 try:
     cors = CORS(app, resources=r'/*')
