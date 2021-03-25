@@ -13,14 +13,8 @@ app = Flask(__name__)
 if (os.environ['ENV'] == 'prod'):
     ## set access
     csp = {
-        'default-src': [
-            '\'self\'',
-            'https://cdn.jsdelivr.net'
-        ],
-        'script-src': [
-            'https://ajax.googleapis.com', 
-            'https://cdn.lr-ingest.io'
-        ]
+        'default-src': '*',
+        'script-src': '*'
     }
     Talisman(app, content_security_policy=csp)
 
