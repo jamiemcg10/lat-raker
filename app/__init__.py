@@ -24,7 +24,10 @@ if (os.environ['ENV'] == 'prod'):
         ],
         'style-src': '*'
     }
-    Talisman(app, content_security_policy=csp)
+    Talisman(
+        app, 
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src'])
 
 try:
     cors = CORS(app, resources=r'/*')
