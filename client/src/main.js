@@ -22,7 +22,6 @@ export const eventBus = new Vue({
     }
   },
   created(){
-    console.log(window.location.href);
     this.baseUrl = window.location.href;
   }
 });
