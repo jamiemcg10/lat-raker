@@ -1,30 +1,22 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!-- Denali CSS & Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/denali-icon-font/dist/denali-icon-font.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/denali-css/css/denali.css">
-    <link rel="stylesheet" href={{ url_for('static', filename='styles.css') }}>
     <link rel="shortcut icon" type="image/png" href={{ url_for('static', filename="balance-1956.png") }}>
+    <!-- Test logging LogRocket-->
+    <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+    <script>window.LogRocket && window.LogRocket.init('ysus7k/latitude-rake');</script>
     <title>Latitude RIM Weight Calculator</title>
     <noscript><p class="error">Javascript must be enabled to use this tool.</p></noscript>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src={{ url_for('static', filename="helper.js") }}></script>
-    <script src={{ url_for('static', filename="flaskWeight.js") }}></script>
-</head>
-
-<body>
-    <h1>RIM Weight Calculator</h1>
-        <div id="file-select-container">
-            <form id="file-form">
-                <div class="input-group is-stacked">
-                    <label for="file">Select an SPSS data file (.sav). The file must have a uuid variable. If there is a weight variable in this file, it will be overwritten.</label><input type="file" name="file" id="file" accept=".sav" required>
-                    <p class="error" id="error"></p>
-                </div>
-            </form>
-    </div>
-</body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!-- needed for ajax calls -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src={{ url_for('static', filename="./dist/build.js") }}></script>  <!-- for prod -->
+  </body>
 </html>

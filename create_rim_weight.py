@@ -1,4 +1,5 @@
 import quantipy as qp 
+from quantipy.core.tools.dp.io import read_spss
 from datetime import datetime
 
 def test():
@@ -92,7 +93,7 @@ def save_file(ds, path):
 
     ds.write_spss(path)
 
-def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid'):
+def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid', description=None):
     """
         Purpose: Save a syntax file that can be run to re-create weight
         Parameters:
@@ -105,6 +106,8 @@ def save_syntax_file(ds, path, weight_name="weight", unique_key='uuid'):
 
     weight_row = "row." + weight_name
     with open(path, 'w') as f:
+        if (description):
+            f.write(description)
         for row in ds[[unique_key, weight_name]].itertuples(index=False):
             f.write("if (%s='%s') %s=%03.20f.\n" %(unique_key, row[0], weight_name, row[1]))
 
@@ -124,8 +127,12 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
             report - weighting summary
     """ 
 
+    # text description of weighting scheme
+    weighting_desc = "* Weighting targets: " + str(mapping) + "\n* Grouping variables: " + (str(grouping['name']) if grouping else "None") + "\n\n"
+
     ds = qp.DataSet('data')
     ds.read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
+    #meta, data = read_spss('./temp/' + file_name, ioLocale=None, detect_dichot=False)
 
     scheme = create_scheme("rake_scheme")
     
@@ -158,6 +165,8 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
         grouping = None # set for crosstabs
     
     ds.weight(scheme, weight_name=weight_name, unique_key=unique_key)
+    ds[weight_name].fillna(1, inplace=True)
+    ds.meta()['measureLevels'][weight_name] = 'scale'
 
     ### Relabel weight
     weight_label_key = list(ds.meta()['columns'][weight_name]['text'])[0] ## get key from weight dict
@@ -165,15 +174,15 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
 
     ### Create name for saved weighted dataset using the time it was created
     dt = str(datetime.now()).replace(':','').replace('.','')
-    file_location = './temp/' + dt.replace(" ","_") + '_weighted.sav'
-    syntax_location = './temp/' + dt.replace(" ","_") + '_weight.sps'
+    file_location = './temp/' + file_name.replace(".sav","") + "_" + dt.replace(" ","_") + '_weighted.sav'
+    syntax_location = './temp/' + file_name.replace(".sav","") + "_" + dt.replace(" ","_") + '_weight.sps'
 
     crosstabs = check_weights(ds, variables, group=grouping, weight=weight_name)
 
     report = generate_report(scheme)
 
     save_file(ds, file_location)
-    save_syntax_file(ds, syntax_location, weight_name, unique_key)
+    save_syntax_file(ds, syntax_location, weight_name, unique_key, weighting_desc)
 
     return file_location, syntax_location, crosstabs, report
 
@@ -263,29 +272,42 @@ def main(spss_filename):
     ### OPEN SPSS DATA
     # edit main() based on desired weighting scheme
     ds = qp.DataSet(spss_filename)
-    ds.read_spss('./' + spss_filename, ioLocale=None, detect_dichot=False)
+    # ds.read_spss('./' + spss_filename, ioLocale=None, detect_dichot=False)
+    ds.read_spss('C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename, ioLocale=None, detect_dichot=False)
 
     scheme = create_scheme()
     
     ### ADD TARGETS TO SCHEME
-    all_targets = []
-    #add_target("gender_targets", "S2", {1: 50.0, 2: 50.0}, all_targets)
-    add_target("age_targets", "AgeGender", {1: 25.0, 2: 25.0, 3: 25.0, 4: 25.0}, all_targets)
-    apply_targets(scheme, all_targets)
+    tv_only_targets = []
+    tv_social_targets = []
 
-    ds_group = ds[['CellXViewer', 'AgeGender']]
-    add_group(ds_group, scheme, "cat 1", "CellXViewer", "0", all_targets)
-    add_group(ds_group, scheme, "cat 2", "CellXViewer", "1", all_targets)
-    add_group(ds_group, scheme, "cat 3", "CellXViewer", "2", all_targets)
-    add_group(ds_group, scheme, "cat 4", "CellXViewer", "3", all_targets)
-    add_group(ds_group, scheme, "cat 5", "CellXViewer", "4", all_targets)
+    #add_target(name, variable, dictionary_of_targets, target_list_to_add_to)
+    add_target("age_targets", "S1_RC", {1: 46.6, 2: 53.4}, tv_only_targets)
+    add_target("age_targets", "S1_RC", {1: 66.0, 2: 34.0}, tv_social_targets)
+    add_target("gender_targets", "S2", {1: 32.4, 2: 67.6}, tv_only_targets)
+    add_target("gender_targets", "S2", {1: 17.0, 2: 83.0}, tv_social_targets)
+    add_target("ethnicity_targets", "Ethnicity", {1: 80.4, 2: 4.7, 3: 8.8, 4: 6.1}, tv_only_targets)
+    add_target("ethnicity_targets", "Ethnicity", {1: 54.2, 2: 10.5, 3: 17.0, 4: 18.3}, tv_social_targets)
+    add_target("usage_targets", "A10r1", {0: 54.1, 1: 45.9}, tv_only_targets)
+    add_target("usage_targets", "A10r1", {0: 35.9, 1: 64.1 }, tv_social_targets)
+    add_target("frequency_targets", "A11_KFC", {0: 73.0, 1: 27.0}, tv_only_targets)
+    add_target("frequency_targets", "A11_KFC", {0: 52.9, 1: 47.1 }, tv_social_targets)
+    # apply_targets(scheme, tv_only_targets)
+    # apply_targets(scheme, tv_social_targets)
+
+    ds_group = ds[['CellSocial', 'S1_RC', 'S2', 'Ethnicity', 'A10r1', 'A11_KFC']]
+    add_group(ds_group, scheme, "tv only primary", "CellSocial", "2", tv_only_targets)
+    add_group(ds_group, scheme, "tv only secondary", "CellSocial", "3", tv_only_targets)
+    add_group(ds_group, scheme, "tv+social primary", "CellSocial", "5", tv_social_targets)
+    add_group(ds_group, scheme, "tv+social secondary", "CellSocial", "6", tv_social_targets)
 
     ds.weight(scheme, weight_name="weight", unique_key='uuid')
+    ds["weight"].fillna(1, inplace=True)
 
-    #check_weights(ds, ['AgeGender'], group='CellXViewer')
+    check_weights(ds, ['S1_RC', 'S2', 'Ethnicity', 'A10r1', 'A11_KFC'], group='CellSocial')
 
-    save_file(ds, './' + spss_filename + '_weighted.sav')
-    save_syntax_file(ds, './' + spss_filename + '_syntax.sps')
+    save_file(ds, 'C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename + '_weighted.sav')
+    save_syntax_file(ds, 'C://Users//Jamie Smart//Dropbox (Latitude)//Active Projects//AETN - Lifetime - KFC (10478)//Fieldwork//data management//' + spss_filename + '_syntax.sps')
 
 if __name__ == "__main__":
-    main('AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA.sav')
+    main('AETN - Lifetime - KFC - Cleaned & Merged FINAL with TA and weight V3.sav')

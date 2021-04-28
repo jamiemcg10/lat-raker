@@ -4,6 +4,8 @@ chardet==4.0.0
 click==7.1.2
 decorator==4.4.2
 Flask==1.1.2
+Flask-Cors==3.0.10
+flask-talisman==0.7.0
 ftfy==5.5.1
 gunicorn==20.0.4
 idna==2.10
@@ -20,7 +22,7 @@ python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-pptx==0.6.18
 pytz==2020.5
--e git+https://github.com/jamiemcg10/quantipy3.git@47556014c5c4ba40953de935c8996b2248b751bd#egg=quantipy3
+-e git+https://github.com/jamiemcg10/quantipy3.git#egg=quantipy3
 requests==2.25.1
 savReaderWriter==3.4.2
 scipy==1.2.1
