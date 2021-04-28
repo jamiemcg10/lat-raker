@@ -11,6 +11,7 @@ new Vue({
 export const eventBus = new Vue({
   data(){
     return {
+      uid: '',
       datasetName: '',
       metaDataList: null,
       metaDataObj: null,

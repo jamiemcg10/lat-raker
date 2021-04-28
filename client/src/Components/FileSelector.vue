@@ -68,6 +68,7 @@ export default {
           success: (results)=>{
               console.log(results);
               if (results.success === "true"){
+                  eventBus.uid = results.uid;
                   eventBus.metaDataObj = results.meta_data_obj;
                   eventBus.metaDataList = results.meta_data_array;
                   this.$emit('dataLoaded', this.datasetName);

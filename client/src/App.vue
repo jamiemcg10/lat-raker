@@ -58,7 +58,7 @@ export default {
     },
     closeResources(){
       // when user closes tab/window, tell server to delete files and session
-      navigator.sendBeacon(eventBus.baseUrl+'close');
+      navigator.sendBeacon(`${eventBus.baseUrl}close?uid=${eventBus.uid}`);
     }
   },
   created(){

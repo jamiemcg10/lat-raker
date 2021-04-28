@@ -174,8 +174,8 @@ def weight_data(variables, mapping, grouping, file_name, weight_name="weight", u
 
     ### Create name for saved weighted dataset using the time it was created
     dt = str(datetime.now()).replace(':','').replace('.','')
-    file_location = './temp/' + dt.replace(" ","_") + '_weighted.sav'
-    syntax_location = './temp/' + dt.replace(" ","_") + '_weight.sps'
+    file_location = './temp/' + file_name.replace(".sav","") + "_" + dt.replace(" ","_") + '_weighted.sav'
+    syntax_location = './temp/' + file_name.replace(".sav","") + "_" + dt.replace(" ","_") + '_weight.sps'
 
     crosstabs = check_weights(ds, variables, group=grouping, weight=weight_name)
 

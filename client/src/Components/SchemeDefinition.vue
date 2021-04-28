@@ -161,6 +161,7 @@ export default {
         }
 
         let data = { // data to send to server
+            uid: eventBus.uid,
             targetVariables: this.factorList,
             targetMapping: this.targets,
             groupingVariable: eventBus.groupSelected,
