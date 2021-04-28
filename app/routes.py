@@ -111,5 +111,6 @@ def close_resources():
         # destroy session
         session[uid] = {}
     
+    print(session)
 
     return {'success': 'true'}
