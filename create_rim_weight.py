@@ -38,7 +38,6 @@ def create_groups(ds, var, group_array):
     """ 
 
     ds.band(var, group_array)
-    print(ds)
 
 
 def add_group(ds, scheme, group_label, var, val, targets):
