@@ -110,6 +110,9 @@ def close_resources():
 
         # destroy session
         session[uid] = {}
+
+        if uid in session:
+            del session[uid]
     
     print(session)
 
