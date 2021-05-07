@@ -35,7 +35,7 @@ export default {
       if (isNaN(parseInt(event.key)) && event.key !== "."){
           event.preventDefault();
       }
-      if (event.key === "." && $event.target.value.indexOf(".") >= 0){  // only one decimal per number
+      if (event.key === "." && event.target.value.indexOf(".") >= 0){  // only one decimal per number
         event.preventDefault();
       }
     },
