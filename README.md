@@ -10,5 +10,3 @@
 Dependencies can be installed from requirements.txt <code>pip install -r "requirements.txt"</code>.
 
 The data file used <i>MUST</i> include the uuid variable.
-
-This is also hosted at https://latitude-rake.herokuapp.com/ 
